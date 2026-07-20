@@ -7,13 +7,13 @@ const mono = JetBrains_Mono({ variable: "--font-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://thanuja-international-airport.thanuja9sekuri.chatgpt.site"),
-  title: "Thanuja International Airport · Software Engineer",
+  title: "Thanuja Sekuri · Software Engineer Portfolio",
   description: "Board an interactive journey through Thanuja Sekuri's software engineering projects, systems, and achievements.",
   icons: { icon: "/favicon.svg", shortcut: "/favicon.svg" },
   openGraph: {
-    title: "Thanuja International Airport",
-    description: "Engineering journeys begin here. Explore Thanuja Sekuri's interactive software engineering portfolio.",
-    images: [{ url: "/og.png", width: 1672, height: 941, alt: "Thanuja International Airport portfolio at golden hour" }],
+    title: "Thanuja Sekuri · Portfolio Airport",
+    description: "Explore Thanuja Sekuri's software engineering projects, skills, experience, and achievements.",
+    images: [{ url: "/og.png", width: 1672, height: 941, alt: "Thanuja Sekuri's Portfolio Airport at golden hour" }],
   },
   twitter: { card: "summary_large_image", images: ["/og.png"] },
 };

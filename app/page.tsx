@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 type Flight = {
   code: string;
@@ -22,23 +22,24 @@ const flights: Flight[] = [
   { code: "TJ-006", gate: "G6", seat: "6A", destination: "Contact Hub", short: "CTX", icon: "◉", tagline: "Let's connect at cruising speed", color: "#e76767" },
 ];
 
-type ExhibitCard = { tag: string; title: string; copy: string; meta: string; image?: string; imageAlt?: string; tags?: string[] };
+type ExhibitCard = { tag: string; title: string; copy: string; meta: string; images?: string[]; imageAlt?: string; tags?: string[]; github?: string; live?: string; certificateImage?: string; certificateHref?: string };
 
 const destinationCopy: Record<string, { eyebrow: string; title: string; intro: string; cards: ExhibitCard[] }> = {
   EDU: {
     eyebrow: "ARRIVALS · EDUCATION HUB",
-    title: "A foundation built for altitude.",
-    intro: "Computer science, international perspective, and a habit of learning by building.",
+    title: "Education",
+    intro: "My academic path—from Andhra Pradesh to a semester in Malaysia.",
     cards: [
-      { tag: "EDU-A · 2022—2026", title: "SRM University, AP", copy: "B.Tech in Computer Science & Engineering", meta: "CGPA 8.92 / 10", image: "https://www.srmap.edu.in/wp-content/uploads/2025/02/research-brochure-bg.webp", imageAlt: "SRM University, Andhra Pradesh campus" },
-      { tag: "EDU-B · 2025", title: "INTI International University", copy: "Semester abroad in Malaysia", meta: "SGPA 3.5 / 4", image: "https://newinti.edu.my/wp-content/uploads/2018/01/IU_campus_small.jpg", imageAlt: "INTI International University campus in Nilai, Malaysia" },
-      { tag: "EDU-C · FOUNDATION", title: "Narayana Junior College", copy: "Intermediate, Mathematics · Physics · Chemistry", meta: "90%" },
+      { tag: "EDU-A · 2022—2026", title: "SRM University, AP", copy: "B.Tech in Computer Science & Engineering", meta: "CGPA 8.92 / 10", images: ["https://www.srmap.edu.in/wp-content/uploads/2025/06/infra11.png", "https://www.srmap.edu.in/wp-content/uploads/2025/06/infra12.png", "https://www.srmap.edu.in/wp-content/uploads/2025/06/infra14.png"], imageAlt: "SRM University, Andhra Pradesh campus" },
+      { tag: "EDU-B · 2025", title: "INTI International University", copy: "Semester abroad in Malaysia", meta: "SGPA 3.5 / 4", images: ["/portfolio-assets/inti-presentation.jpeg", "/portfolio-assets/inti-certificate.png", "/portfolio-assets/inti-campus.jpeg", "/portfolio-assets/malaysia-friends.jpeg", "/portfolio-assets/kuala-lumpur.jpeg"], imageAlt: "Thanuja's semester at INTI International University, Malaysia" },
+      { tag: "EDU-C · 2020—2022", title: "Narayana Junior College", copy: "Intermediate · Mathematics, Physics & Chemistry", meta: "90%" },
+      { tag: "EDU-D · SCHOOL", title: "Bhashyam Public School", copy: "Secondary School Education", meta: "98%" },
     ],
   },
   SKL: {
     eyebrow: "ARRIVALS · SKILLS TERMINAL",
-    title: "The systems behind the experience.",
-    intro: "A practical engineering toolkit spanning languages, interfaces, APIs, data, tools, and computer science fundamentals.",
+    title: "Technical skills",
+    intro: "The tools and fundamentals I use to build software.",
     cards: [
       { tag: "ZONE A · LANGUAGES", title: "Languages", copy: "C++ · Java · JavaScript", meta: "CORE" },
       { tag: "ZONE B · FRONTEND", title: "Frontend", copy: "React.js · HTML5 · CSS3 · Tailwind CSS", meta: "INTERFACES" },
@@ -50,40 +51,41 @@ const destinationCopy: Record<string, { eyebrow: string; title: string; intro: s
   },
   PRJ: {
     eyebrow: "ARRIVALS · PROJECTS HANGAR",
-    title: "Three machines. Real engineering.",
-    intro: "Each project began with a difficult operational problem—not a technology checklist.",
+    title: "Projects",
+    intro: "Systems I designed, built, tested, and shipped.",
     cards: [
-      { tag: "AIRCRAFT 01 · FLAGSHIP", title: "Pipeline Orchestrator", copy: "High-throughput systems often lose visibility and reliability when messages cross brokers. This distributed orchestrator routes events between Kafka and RabbitMQ using sub-millisecond cached rules, controlled offsets, retries, and dead-letter recovery—preserving critical messages under failure.", meta: "<1MS RULES · <100MS CRITICAL", tags: ["TypeScript", "Kafka", "RabbitMQ", "Redis", "Docker"] },
-      { tag: "AIRCRAFT 02 · AI", title: "Legal Document Analyzer", copy: "Long legal documents hide important obligations and risk inside dense language. This AI workflow processes files asynchronously, extracts structured clause-level insights, and classifies risk from Low to Critical so reviewers can focus attention where it matters most.", meta: "LOW → CRITICAL RISK", tags: ["React.js", "Node.js", "GPT-4", "Bull Queue", "MongoDB"] },
-      { tag: "AIRCRAFT 03 · PLATFORM", title: "NeoConnect", copy: "Workplace concerns can disappear when reporting channels lack trust, tracking, and accountability. NeoConnect supports anonymous submissions, role-based access, media evidence, persistent status tracking, and automated escalation for unresolved cases.", meta: "JWT · CLOUDINARY · NEXT.JS", tags: ["Next.js", "Express.js", "MongoDB", "JWT", "Cloudinary"] },
+      { tag: "PROJECT 01 · DISTRIBUTED SYSTEMS", title: "Pipeline Orchestrator", copy: "Routes high-throughput events between Kafka and RabbitMQ with cached rules, controlled offsets, retries, and dead-letter recovery. It is built to keep critical messages moving even when part of the pipeline fails.", meta: "<1MS RULES · <100MS CRITICAL", tags: ["TypeScript", "Kafka", "RabbitMQ", "Redis", "Docker"], github: "https://github.com/thanujaa9/pipeline-orchestrator" },
+      { tag: "PROJECT 02 · APPLIED AI", title: "Legal Document Analyzer", copy: "Turns long legal documents into clause-level summaries and clear risk classifications. Background jobs and caching keep large uploads responsive while reviewers focus on the clauses that need attention.", meta: "LOW → CRITICAL RISK", tags: ["React.js", "Node.js", "GPT-4", "Bull Queue", "MongoDB"], github: "https://github.com/thanujaa9/Legal-Document-Analyzer", live: "https://legal-document-analyzer-main.onrender.com" },
+      { tag: "PROJECT 03 · FULL STACK", title: "NeoConnect", copy: "A complaint-management platform with anonymous reporting, role-based access, evidence uploads, status tracking, and automatic escalation when cases remain unresolved.", meta: "JWT · CLOUDINARY · NEXT.JS", tags: ["Next.js", "Express.js", "MongoDB", "JWT", "Cloudinary"], github: "https://github.com/thanujaa9/neoconnect", live: "https://neoconnect-mu.vercel.app/" },
     ],
   },
   EXP: {
     eyebrow: "ARRIVALS · EXPERIENCE LOUNGE",
-    title: "Shipping beyond the classroom.",
-    intro: "Product thinking and implementation across mobile development and a real family business.",
+    title: "Experience",
+    intro: "Hands-on work across Android development and a real business workflow.",
     cards: [
       { tag: "GOOGLE DEVELOPER PROGRAM", title: "Android App Developer", copy: "Built modular Android apps using Kotlin and Jetpack Compose, translating product requirements into maintainable mobile UI architecture.", meta: "OCT—DEC 2024", tags: ["Kotlin", "Jetpack Compose", "Room", "DataStore"] },
-      { tag: "FAMILY BUSINESS · 2024", title: "Thanuja Motors Digital System", copy: "Built a progressive web app for a bike dealership with inventory management, PDF billing, and a bilingual Telugu/English interface using React.js and Firebase.", meta: "REAL-WORLD OPERATIONS", tags: ["React.js", "Firebase", "PWA", "PDF Billing", "Bilingual UI"] },
+      { tag: "FAMILY BUSINESS · 2026", title: "Thanuja Motors Digital System", copy: "Built a progressive web app for a bike dealership with inventory management, PDF billing, and a bilingual Telugu/English interface using React.js and Firebase.", meta: "FAMILY BUSINESS · 2026", tags: ["React.js", "Firebase", "PWA", "PDF Billing", "Bilingual UI"] },
     ],
   },
   ACH: {
     eyebrow: "ARRIVALS · ACHIEVEMENT HALL",
-    title: "Recognition at full throttle.",
-    intro: "Evidence of resourcefulness, teamwork, and delivery under pressure.",
+    title: "Highlights & certificates",
+    intro: "Research, competitions, and certifications I’m proud of.",
     cards: [
-      { tag: "NATIONAL LEVEL · WINNER", title: "Technocrats Hackathon", copy: "Built an innovative solution in a competitive, time-constrained environment.", meta: "WINNER" },
-      { tag: "SPECIAL PRIZE", title: "ETHIndia Prize", copy: "Recognized for technical ambition and execution during the hackathon.", meta: "AWARDED" },
-      { tag: "CERTIFICATION", title: "MongoDB", copy: "CRUD, indexing, aggregation pipelines, and applied schema design.", meta: "CERTIFIED" },
-      { tag: "RESEARCH PAPER · PRESENTER", title: "AICCoNS 2026", copy: "Presented oral research on “Secure Luxury Product Authentication Using Batch NFTs and Zero-Knowledge Proofs” at the University of Wollongong in Dubai, April 28–30, 2026.", meta: "INTERNATIONAL CONFERENCE" },
+      { tag: "RESEARCH PAPER · PRESENTER", title: "AICCoNS 2026", copy: "Presented “Secure Luxury Product Authentication Using Batch NFTs and Zero-Knowledge Proofs” at the University of Wollongong in Dubai, April 28–30, 2026.", meta: "INTERNATIONAL CONFERENCE", certificateImage: "/portfolio-assets/aiccons-certificate.png", certificateHref: "/portfolio-assets/aiccons-certificate.pdf" },
+      { tag: "NATIONAL LEVEL · WINNER", title: "Technocrats Hackathon", copy: "Won the national-level hackathon after building and presenting a working solution under tight time constraints.", meta: "WINNER" },
+      { tag: "HACKATHON · FINALIST", title: "Golden Goals Hackathon", copy: "Selected as a finalist for developing and pitching a solution around measurable real-world impact.", meta: "FINALIST" },
+      { tag: "CERTIFICATION", title: "MongoDB Associate Developer", copy: "Certified in MongoDB development, including CRUD, indexing, aggregation pipelines, and schema design.", meta: "CERTIFIED · NOV 2025", certificateImage: "/portfolio-assets/mongodb-certificate.png", certificateHref: "/portfolio-assets/mongodb-certificate.png" },
+      { tag: "CERTIFICATION", title: "Oracle Cloud Infrastructure", copy: "Oracle Cloud Infrastructure 2025 Certified Foundations Associate.", meta: "CERTIFIED · SEP 2025", certificateImage: "/portfolio-assets/oracle-certificate.png", certificateHref: "/portfolio-assets/oracle-certificate.pdf" },
     ],
   },
   CTX: {
     eyebrow: "ARRIVALS · CONTACT HUB",
-    title: "Open channel. Clear signal.",
-    intro: "Looking for software engineering opportunities across backend, full-stack, distributed systems, and applied AI.",
+    title: "Let’s connect",
+    intro: "I’m open to software engineering roles across backend, full stack, distributed systems, and applied AI.",
     cards: [
-      { tag: "EMAIL", title: "Start a conversation", copy: "thanuja_sekuri@srmap.edu.in", meta: "AVAILABLE" },
+      { tag: "EMAIL", title: "Start a conversation", copy: "thanujasekuri000@gmail.com", meta: "AVAILABLE" },
       { tag: "GITHUB", title: "Inspect the source", copy: "github.com/thanujaa9", meta: "OPEN PROFILE" },
       { tag: "LINKEDIN", title: "Connect professionally", copy: "linkedin.com/in/thanuja-sekuri", meta: "LET'S CONNECT" },
     ],
@@ -95,7 +97,7 @@ function Ava({ moving }: { moving: boolean }) {
     <div className={`ava ${moving ? "walking" : ""}`} aria-label="Ava, your airport guide">
       <div className="bag"><span /></div>
       <div className="ava-head"><span className="hair" /></div>
-      <div className="ava-body"><span className="lanyard">TJA</span></div>
+      <div className="ava-body"><span className="lanyard">TS</span></div>
       <div className="ava-legs"><span /><span /></div>
     </div>
   );
@@ -108,46 +110,55 @@ export default function Home() {
   const [passport, setPassport] = useState(false);
   const [intro, setIntro] = useState(true);
   const [moving, setMoving] = useState(false);
-  const [sound, setSound] = useState(true);
+  const [sound, setSound] = useState(false);
   const [flying, setFlying] = useState(false);
   const [clock, setClock] = useState("--:--:-- IST");
+  const [avaPosition, setAvaPosition] = useState({ x: 0, y: 0 });
+  const [photoGallery, setPhotoGallery] = useState<ExhibitCard | null>(null);
+  const ambientAudio = useRef<HTMLAudioElement | null>(null);
 
   const current = active ? destinationCopy[active.short] : null;
   const progress = Math.round((visited.length / flights.length) * 100);
   const nextFlight = useMemo(() => flights.find((flight) => !visited.includes(flight.short)), [visited]);
 
   const openGate = useCallback((flight: Flight) => {
+    if (visited.includes(flight.short)) {
+      setActive(flight);
+      window.requestAnimationFrame(() => document.querySelector(".arrival")?.scrollIntoView({ behavior: "smooth", block: "start" }));
+      return;
+    }
     setSelected(flight);
     setMoving(true);
     window.setTimeout(() => setMoving(false), 700);
-  }, []);
+  }, [visited]);
 
-  const playWhoosh = useCallback(() => {
-    if (!sound) return;
-    const AudioContextClass = window.AudioContext || (window as typeof window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
-    if (!AudioContextClass) return;
-    const context = new AudioContextClass();
-    const oscillator = context.createOscillator();
-    const gain = context.createGain();
-    oscillator.type = "sawtooth";
-    oscillator.frequency.setValueAtTime(85, context.currentTime);
-    oscillator.frequency.exponentialRampToValueAtTime(260, context.currentTime + 1.5);
-    gain.gain.setValueAtTime(0.0001, context.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.055, context.currentTime + 0.22);
-    gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 1.9);
-    oscillator.connect(gain); gain.connect(context.destination); oscillator.start(); oscillator.stop(context.currentTime + 2);
+  const toggleSound = useCallback(async () => {
+    const audio = ambientAudio.current;
+    if (!audio) return;
+    if (sound) {
+      audio.pause();
+      setSound(false);
+      return;
+    }
+    audio.volume = 0.3;
+    try { await audio.play(); setSound(true); } catch { setSound(false); }
   }, [sound]);
 
   const flyTo = useCallback((flight: Flight) => {
     if (flying) return;
-    setSelected(null); setFlying(true); playWhoosh();
+    setSelected(null); setFlying(true);
     window.setTimeout(() => {
       setActive(flight);
       setVisited((old) => old.includes(flight.short) ? old : [...old, flight.short]);
       setFlying(false);
       window.requestAnimationFrame(() => document.querySelector(".arrival")?.scrollIntoView({ behavior: "smooth", block: "start" }));
-    }, 2000);
-  }, [flying, playWhoosh]);
+    }, 1000);
+  }, [flying]);
+
+  const moveAva = useCallback((dx: number, dy: number) => {
+    setAvaPosition((position) => ({ x: Math.max(-180, Math.min(300, position.x + dx)), y: Math.max(-70, Math.min(80, position.y + dy)) }));
+    setMoving(true); window.setTimeout(() => setMoving(false), 340);
+  }, []);
 
   const board = () => {
     if (!selected) return;
@@ -161,26 +172,26 @@ export default function Home() {
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") { setActive(null); setSelected(null); setPassport(false); }
+      if (event.key === "Escape") { setActive(null); setSelected(null); setPassport(false); setPhotoGallery(null); }
       if ((event.key === "e" || event.key === "E") && !selected && !active) openGate(nextFlight || flights[0]);
-      if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "w", "a", "s", "d", "W", "A", "S", "D", " "].includes(event.key)) {
-        setMoving(true); window.setTimeout(() => setMoving(false), 500);
-      }
+      if (["ArrowUp", "w", "W"].includes(event.key)) { event.preventDefault(); moveAva(0, -16); }
+      if (["ArrowDown", "s", "S"].includes(event.key)) { event.preventDefault(); moveAva(0, 16); }
+      if (["ArrowLeft", "a", "A"].includes(event.key)) { event.preventDefault(); moveAva(-22, 0); }
+      if (["ArrowRight", "d", "D"].includes(event.key)) { event.preventDefault(); moveAva(22, 0); }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [active, nextFlight, openGate, selected]);
+  }, [active, moveAva, nextFlight, openGate, selected]);
 
   return (
     <main className={active ? `airport destination destination-${active.short.toLowerCase()}` : "airport"}>
       <header className="topbar">
         <button className="brand" onClick={() => setActive(null)} aria-label="Return to main terminal">
-          <span className="brand-mark">TJA</span>
-          <span>THANUJA INTERNATIONAL<br/><small>PORTFOLIO AIRPORT</small></span>
+          <span>THANUJA'S PORTFOLIO<br/><small>AIRPORT EXPERIENCE</small></span>
         </button>
         <div className="header-actions">
           <time className="ist-clock" dateTime={new Date().toISOString()}>{clock}</time>
-          <button className="sound" onClick={() => setSound(!sound)} aria-label="Toggle ambient sound">{sound ? "◉ SOUND ON" : "○ SOUND OFF"}</button>
+          <button className="sound" onClick={toggleSound} aria-label="Toggle airplane ambient sound">{sound ? "◉ SOUND ON" : "○ SOUND OFF"}</button>
           <button className="passport-button" onClick={() => setPassport(true)}>▣ PASSPORT <b>{visited.length}/6</b></button>
         </div>
       </header>
@@ -192,16 +203,16 @@ export default function Home() {
             <div className="glass-lines" />
             <div className="terminal-heading">
               <p className="kicker">WELCOME TO TERMINAL T1 · GOLDEN HOUR</p>
-              <h1>Engineering journeys<br/>begin <em className="typing-word">here.</em></h1>
-              <p>Explore the systems, products, and milestones of<br className="desktop-only"/> Thanuja Sekuri—one destination at a time.</p>
+              <h1><span>Boarding all ideas.</span><em>Destination: production.</em></h1>
+              <p><span>Every flight I've taken was a problem worth solving.</span><strong>— Thanuja</strong></p>
             </div>
 
             <div className="fids-wrap">
-              <div className="fids-header"><span>THANUJA INTERNATIONAL AIRPORT</span><b>DEPARTURES / उड़ानें</b><time>{clock}</time></div>
+              <div className="fids-header"><span>PORTFOLIO AIRPORT</span><b>DEPARTURES / उड़ानें</b><time>{clock}</time></div>
               <div className="fids-labels"><span>FLIGHT</span><span>DESTINATION</span><span>GATE</span><span>STATUS</span></div>
               <div className="flight-list">
                 {flights.map((flight) => (
-                  <button key={flight.code} onClick={() => flyTo(flight)} className={visited.includes(flight.short) ? "visited" : ""} disabled={flying}>
+                  <button key={flight.code} onClick={() => openGate(flight)} className={visited.includes(flight.short) ? "visited" : ""} disabled={flying}>
                     <span>{flight.code}</span><strong>{flight.destination}</strong><span>{flight.gate}</span><span className="status"><i/>{visited.includes(flight.short) ? "ARRIVED" : "BOARDING"}</span>
                   </button>
                 ))}
@@ -213,9 +224,9 @@ export default function Home() {
               <div className="gate-row">
                 {flights.map((flight) => <button key={flight.gate} onClick={() => openGate(flight)} aria-label={`Open ${flight.destination}`}><span>{flight.gate}</span><small>{flight.short}</small></button>)}
               </div>
-              <div className="ava-zone"><Ava moving={moving}/><div className="guide-bubble"><small>YOUR GUIDE</small><b>AVA</b><span>Choose any departure ↑</span></div></div>
-              <div className="floor-logo"><b>TJA</b><span>✦</span></div>
+              <div className="ava-zone" style={{ transform: `translate(${avaPosition.x}px, ${avaPosition.y}px)` }}><Ava moving={moving}/><div className="guide-bubble"><small>YOUR GUIDE</small><b>AVA</b><span>Use the controls to explore</span></div></div>
               <div className="controls"><span><kbd>WASD</kbd> WALK</span><span><kbd>E</kbd> INTERACT</span><span><kbd>ESC</kbd> TERMINAL</span></div>
+              <div className="dpad" aria-label="Movement controls"><button aria-label="Move up" onClick={() => moveAva(0,-16)}>↑</button><button aria-label="Move left" onClick={() => moveAva(-22,0)}>←</button><button aria-label="Move down" onClick={() => moveAva(0,16)}>↓</button><button aria-label="Move right" onClick={() => moveAva(22,0)}>→</button></div>
             </div>
           </section>
           <section className="manifesto">
@@ -236,20 +247,21 @@ export default function Home() {
           <div className={`exhibit-grid ${active.short === "PRJ" ? "project-grid" : ""} ${active.short === "EDU" ? "education-grid" : ""}`}>
             {current.cards.map((card, index) => (
               <article key={card.title} style={{ "--delay": `${index * 90}ms` } as React.CSSProperties}>
-                {card.image && <div className="campus-photo"><img src={card.image} alt={card.imageAlt || card.title}/><span>LIVE CAMPUS VIEW · {card.title}</span></div>}
+                {card.images && <div className="campus-gallery">{card.images.slice(0, 3).map((image, imageIndex) => <img key={image} src={image} alt={`${card.imageAlt || card.title} - view ${imageIndex + 1}`}/>) }<button onClick={() => setPhotoGallery(card)}>VIEW ALL PHOTOS ↗</button></div>}
+                {card.certificateImage && <a className="certificate-preview" href={card.certificateHref} target="_blank" rel="noreferrer"><img src={card.certificateImage} alt={`${card.title} certificate`}/><span>VIEW CERTIFICATE ↗</span></a>}
                 <div className="exhibit-number">0{index + 1}</div>
                 <p>{card.tag}</p><h2>{card.title}</h2><div className="exhibit-rule"/><span>{card.copy}</span>
                 {card.tags && <div className="tech-tags">{card.tags.map((tag) => <small key={tag}>{tag}</small>)}</div>}
-                {active.short === "PRJ" && <div className="project-actions"><a href="#" onClick={(event) => event.preventDefault()}>GitHub ↗</a><a href="#" onClick={(event) => event.preventDefault()}>Live Demo ↗</a></div>}
-                <b className={active.short === "EDU" && index === 0 ? "cgpa" : ""}>{card.meta}</b>
+                {active.short === "PRJ" && <div className="project-actions">{card.github && <a href={card.github} target="_blank" rel="noreferrer">GitHub ↗</a>}{card.live && <a href={card.live} target="_blank" rel="noreferrer">Live Demo ↗</a>}</div>}
+                <b className={`${active.short === "EDU" ? "grade" : ""} ${active.short === "EXP" && index === 1 ? "family-business" : ""}`}>{card.meta}</b>
               </article>
             ))}
           </div>
           {active.short === "CTX" && <>
-            <div className="contact-strip"><a href="mailto:thanuja_sekuri@srmap.edu.in">EMAIL THANUJA ↗</a><a href="https://github.com/thanujaa9" target="_blank" rel="noreferrer">GITHUB ↗</a><a href="https://linkedin.com/in/thanuja-sekuri" target="_blank" rel="noreferrer">LINKEDIN ↗</a></div>
+            <div className="contact-strip"><a href="mailto:thanujasekuri000@gmail.com">EMAIL THANUJA ↗</a><a href="https://github.com/thanujaa9" target="_blank" rel="noreferrer">GITHUB ↗</a><a href="https://linkedin.com/in/thanuja-sekuri" target="_blank" rel="noreferrer">LINKEDIN ↗</a></div>
             <article className="contact-boarding-pass">
-              <div className="contact-ticket-head"><span>TJA ✈</span><div><small>THANUJA INTERNATIONAL AIRPORT</small><h2>LET'S BUILD THE NEXT JOURNEY.</h2></div><b>FIRST CLASS</b></div>
-              <div className="contact-ticket-fields"><div><small>PASSENGER</small><b>THANUJA SEKURI</b></div><div><small>EMAIL</small><a href="mailto:thanuja_sekuri@srmap.edu.in">thanuja_sekuri@srmap.edu.in</a></div><div><small>GITHUB</small><a href="https://github.com/thanujaa9" target="_blank" rel="noreferrer">github.com/thanujaa9</a></div><div><small>LINKEDIN</small><a href="https://linkedin.com/in/thanuja-sekuri" target="_blank" rel="noreferrer">linkedin.com/in/thanuja-sekuri</a></div></div>
+              <div className="contact-ticket-head"><span>✈</span><div><small>PORTFOLIO AIRPORT</small><h2>LET'S BUILD THE NEXT JOURNEY.</h2></div><b>FIRST CLASS</b></div>
+              <div className="contact-ticket-fields"><div><small>PASSENGER</small><b>THANUJA SEKURI</b></div><div><small>EMAIL</small><a href="mailto:thanujasekuri000@gmail.com">thanujasekuri000@gmail.com</a></div><div><small>GITHUB</small><a href="https://github.com/thanujaa9" target="_blank" rel="noreferrer">github.com/thanujaa9</a></div><div><small>LINKEDIN</small><a href="https://linkedin.com/in/thanuja-sekuri" target="_blank" rel="noreferrer">linkedin.com/in/thanuja-sekuri</a></div></div>
               <div className="contact-barcode">|||| || | ||||| ||| || ||||||</div>
             </article>
           </>}
@@ -261,9 +273,9 @@ export default function Home() {
         <div className="modal-backdrop" onClick={() => setSelected(null)}>
           <article className="boarding-pass" onClick={(e) => e.stopPropagation()}>
             <div className="ticket-main">
-              <div className="ticket-brand"><span>TJA ✈</span><b>THANUJA INTERNATIONAL AIRPORT</b><small>BOARDING PASS / बोर्डिंग पास</small></div>
+              <div className="ticket-brand"><span>✈</span><b>PORTFOLIO AIRPORT</b><small>BOARDING PASS / बोर्डिंग पास</small></div>
               <p className="ticket-tagline">{selected.tagline}</p>
-              <div className="ticket-route"><div><small>FROM</small><b>TERMINAL T1</b><span>TJA</span></div><i>✈</i><div><small>TO</small><b>{selected.destination}</b><span>{selected.short}</span></div></div>
+              <div className="ticket-route"><div><small>FROM</small><b>TERMINAL T1</b><span>T1</span></div><i>✈</i><div><small>TO</small><b>{selected.destination}</b><span>{selected.short}</span></div></div>
               <div className="ticket-data"><div><small>PASSENGER</small><b>VALUED VISITOR</b></div><div><small>FLIGHT</small><b>{selected.code}</b></div><div><small>GATE</small><b>{selected.gate}</b></div><div><small>SEAT</small><b>{selected.seat}</b></div></div>
               <button className="board-button" onClick={board}>BOARD FLIGHT — DEPART ✈</button>
             </div>
@@ -275,7 +287,7 @@ export default function Home() {
       {passport && (
         <div className="modal-backdrop" onClick={() => setPassport(false)}>
           <article className="passport" onClick={(e) => e.stopPropagation()}>
-            <div className="passport-cover"><span>✦</span><p>TRAVELER'S</p><h2>PASSPORT</h2><div>✈</div><small>TJA · VISITOR EDITION</small></div>
+            <div className="passport-cover"><span>✦</span><p>TRAVELER'S</p><h2>PASSPORT</h2><div>✈</div><small>VISITOR EDITION</small></div>
             <div className="passport-page"><button onClick={() => setPassport(false)}>×</button><p>PORTFOLIO JOURNEY</p><h2>Destination stamps</h2><div className="stamps">{flights.map((flight) => <span key={flight.short} className={visited.includes(flight.short) ? "stamped" : ""} style={{"--stamp": flight.color} as React.CSSProperties}><b>{flight.short}</b><small>{visited.includes(flight.short) ? "VISITED" : "OPEN"}</small></span>)}</div><div className="passport-progress"><span style={{width: `${progress}%`}}/><p>{progress}% COMPLETE</p></div>{progress === 100 ? <h3>FREQUENT FLYER UNLOCKED ✦</h3> : <small>Visit all 6 destinations to unlock Frequent Flyer status.</small>}</div>
           </article>
         </div>
@@ -283,11 +295,14 @@ export default function Home() {
 
       {flying && <div className="flight-transition" role="status" aria-live="polite"><div className="transition-trail"/><span className="transition-plane">✈</span><p>NOW DEPARTING · PLEASE STAND BY</p></div>}
 
+      {photoGallery?.images && <div className="modal-backdrop photo-backdrop" onClick={() => setPhotoGallery(null)}><section className="photo-lightbox" onClick={(event) => event.stopPropagation()}><header><div><small>EDUCATION HUB · PHOTO LOG</small><h2>{photoGallery.title}</h2></div><button onClick={() => setPhotoGallery(null)} aria-label="Close photo gallery">×</button></header><div>{photoGallery.images.map((image, index) => <figure key={image}><img src={image} alt={`${photoGallery.imageAlt || photoGallery.title} - photo ${index + 1}`}/><figcaption>PHOTO {String(index + 1).padStart(2, "0")}</figcaption></figure>)}</div></section></div>}
+
       {intro && (
         <div className="intro-screen">
-          <div className="intro-plane">✈</div><p>YOU HAVE ARRIVED AT</p><h1>THANUJA<br/><em>INTERNATIONAL</em></h1><span>PORTFOLIO AIRPORT · TJA</span><button onClick={() => setIntro(false)}>ENTER TERMINAL <b>→</b></button><small>BEST EXPERIENCED WITH CURIOSITY</small>
+          <div className="intro-plane">✈</div><p>YOU HAVE ARRIVED AT</p><h1>PORTFOLIO<br/><em>AIRPORT</em></h1><span>THANUJA SEKURI · SOFTWARE ENGINEER</span><button onClick={() => setIntro(false)}>ENTER TERMINAL <b>→</b></button><small>BEST EXPERIENCED WITH CURIOSITY</small>
         </div>
       )}
+      <audio ref={ambientAudio} src="/portfolio-assets/airplane-ambient.mp3" loop preload="metadata" />
     </main>
   );
 }
