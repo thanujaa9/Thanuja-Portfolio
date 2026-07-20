@@ -87,7 +87,7 @@ const destinationCopy: Record<string, { eyebrow: string; title: string; intro: s
     cards: [
       { tag: "EMAIL", title: "Start a conversation", copy: "thanujasekuri000@gmail.com", meta: "AVAILABLE" },
       { tag: "GITHUB", title: "Inspect the source", copy: "github.com/thanujaa9", meta: "OPEN PROFILE" },
-      { tag: "LINKEDIN", title: "Connect professionally", copy: "linkedin.com/in/thanuja-sekuri", meta: "LET'S CONNECT" },
+      { tag: "LINKEDIN", title: "Connect professionally", copy: "linkedin.com/in/thanujasekuri", meta: "LET'S CONNECT" },
     ],
   },
 };
@@ -258,10 +258,10 @@ export default function Home() {
             ))}
           </div>
           {active.short === "CTX" && <>
-            <div className="contact-strip"><a href="mailto:thanujasekuri000@gmail.com">EMAIL THANUJA ↗</a><a href="https://github.com/thanujaa9" target="_blank" rel="noreferrer">GITHUB ↗</a><a href="https://linkedin.com/in/thanuja-sekuri" target="_blank" rel="noreferrer">LINKEDIN ↗</a></div>
+            <div className="contact-strip"><a href="mailto:thanujasekuri000@gmail.com">EMAIL THANUJA ↗</a><a href="https://github.com/thanujaa9" target="_blank" rel="noreferrer">GITHUB ↗</a><a href="https://www.linkedin.com/in/thanujasekuri/" target="_blank" rel="noreferrer">LINKEDIN ↗</a></div>
             <article className="contact-boarding-pass">
               <div className="contact-ticket-head"><span>✈</span><div><small>PORTFOLIO AIRPORT</small><h2>LET'S BUILD THE NEXT JOURNEY.</h2></div><b>FIRST CLASS</b></div>
-              <div className="contact-ticket-fields"><div><small>PASSENGER</small><b>THANUJA SEKURI</b></div><div><small>EMAIL</small><a href="mailto:thanujasekuri000@gmail.com">thanujasekuri000@gmail.com</a></div><div><small>GITHUB</small><a href="https://github.com/thanujaa9" target="_blank" rel="noreferrer">github.com/thanujaa9</a></div><div><small>LINKEDIN</small><a href="https://linkedin.com/in/thanuja-sekuri" target="_blank" rel="noreferrer">linkedin.com/in/thanuja-sekuri</a></div></div>
+              <div className="contact-ticket-fields"><div><small>PASSENGER</small><b>THANUJA SEKURI</b></div><div><small>EMAIL</small><a href="mailto:thanujasekuri000@gmail.com">thanujasekuri000@gmail.com</a></div><div><small>GITHUB</small><a href="https://github.com/thanujaa9" target="_blank" rel="noreferrer">github.com/thanujaa9</a></div><div><small>LINKEDIN</small><a href="https://www.linkedin.com/in/thanujasekuri/" target="_blank" rel="noreferrer">linkedin.com/in/thanujasekuri</a></div></div>
               <div className="contact-barcode">|||| || | ||||| ||| || ||||||</div>
             </article>
           </>}
